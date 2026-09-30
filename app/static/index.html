@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Swachh AI · Cleanliness inspections</title><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script></head>
+<body>
+<aside class="sidebar">
+<a class="brand" href="/" aria-label="Swachh AI home"><span class="brand-mark">✳</span> swachh<span class="brand-ai">AI</span></a>
+<div class="workspace-label">WORKSPACE</div>
+<div class="nav-item active"><span>▦</span> Inspections <span class="nav-dot"></span></div>
+<div class="sidebar-section"><span>YOUR LOCATIONS</span><button id="add-location" class="icon-btn" aria-label="Add location">＋</button></div>
+<div id="location-list" class="location-list"><p class="sidebar-empty">Your locations will appear here.</p></div>
+<div class="sidebar-bottom"><div class="mini-logo">S</div><div><strong>Cleaner spaces.<br>Clearer evidence.</strong><small>Visual inspections, simplified.</small></div></div>
+</aside>
+<div class="app-shell">
+<header class="topbar"><div>Workspace <span class="slash">/</span> <strong>Inspections</strong></div><button id="settings-btn" class="settings-btn"><span id="key-dot" class="status-dot"></span> Gemini settings <span>⚙</span></button></header>
+<main>
+<div class="page-heading"><div><div class="eyebrow">CLEANLINESS INTELLIGENCE</div><h1>A clearer view of clean.</h1><p>Compare the latest photos with your clean standard.</p></div><div class="engine-tag"><span class="spark">✧</span> Powered by Gemini Flash</div></div>
+<div id="alert" role="alert" hidden></div>
+<section class="workflow-bar"><span class="step current"><b>1</b> Set your standard</span><span class="step-line"></span><span class="step"><b>2</b> Upload new photos</span><span class="step-line"></span><span class="step"><b>3</b> Review the difference</span></section>
+<div class="section-heading"><div><h2 id="location-title">Your first inspection starts here</h2><p id="location-subtitle">Create a location and save its clean reference photos once.</p></div><button class="button secondary" id="new-location-btn">＋ New location</button></div>
+<div class="comparison-grid">
+<section class="panel"><div class="panel-heading"><div class="panel-icon">▧</div><div><h3>Clean reference</h3><p>Your fixed standard of cleanliness</p></div><span class="badge">BASELINE</span></div>
+<div id="reference-gallery" class="gallery empty-gallery"><div class="empty-art">▧</div><h4>A clean starting point.</h4><p>Add photos of this location at its cleanest.<br>We’ll keep them for every inspection.</p><button class="button secondary" id="setup-btn">Set up a location <span>↗</span></button></div>
+<div class="panel-foot"><span>♧</span> Saved once. Reused for every comparison.</div></section>
+<section class="panel"><div class="panel-heading"><div class="panel-icon blue">↥</div><div><h3>New inspection</h3><p>Photos taken after the latest cleanup</p></div><span class="badge neutral">NEW PHOTOS</span></div>
+<label class="drop-zone" id="drop-zone" for="new-images"><span class="upload-icon">↥</span><strong>Drop your photos here</strong><span>or <u>browse files</u> to upload</span><small>JPG, PNG or WebP · Up to 6 photos · 8 MB each</small><input id="new-images" type="file" accept="image/jpeg,image/png,image/webp" multiple></label>
+<div id="new-gallery" class="gallery" hidden></div><div id="upload-controls" hidden><button id="clear-photos" class="text-button">Clear photos</button><span id="photo-count"></span></div>
+<div class="panel-foot"><span>◎</span> Match the reference angles for a better comparison.</div></section>
+</div>
+<div class="analyze-row"><p><span>✧</span> Your photos become evidence. Gemini checks the details.</p><button id="analyze-btn" class="button primary" disabled>Analyze cleanliness <span>↗</span></button></div>
+<div id="progress" class="progress-panel" role="status" hidden><span class="spinner"></span><div><strong>Inspecting the visible details…</strong><p>Matching viewpoints, checking surfaces, and identifying what needs attention. This can take up to two minutes.</p></div></div>
+<section id="results" hidden aria-live="polite"></section>
+<section class="history-section"><div class="section-heading"><div><h2>Inspection history</h2><p>A record of every check, all in one place.</p></div><span id="history-count" class="badge neutral">0 INSPECTIONS</span></div><div id="history-list" class="history-empty"><span>◷</span><div><strong>No inspections yet</strong><p>Your completed inspections will appear here.</p></div></div></section>
+<footer><span><span class="footer-mark">✳</span> A little more care. A cleaner everywhere.</span><span>Visual estimates · Human judgment matters</span></footer>
+</main></div>
+<dialog id="location-dialog"><form id="location-form"><div class="dialog-heading"><div><div class="eyebrow">YOUR CLEAN STANDARD</div><h2>Create a location</h2></div><button type="button" class="icon-btn close-dialog" aria-label="Close">×</button></div><p>Save 1–6 reference photos of one location at its cleanest. These stay fixed for future inspections.</p><label class="field-label" for="location-name">Location name</label><input id="location-name" name="name" type="text" maxlength="120" placeholder="e.g. Building A · Main entrance" required><label class="field-label" for="reference-images">Clean reference photos</label><input id="reference-images" type="file" accept="image/jpeg,image/png,image/webp" multiple required><small>JPG, PNG or WebP · 8 MB per image · Minimum 128 × 128 px</small><div id="reference-preview" class="gallery"></div><p class="note">Use distinct views that cover your cleaning area. Each inspection should cover every reference view. To change the standard later, create a new location.</p><p id="location-error" class="inline-error" role="alert"></p><button type="submit" class="button primary full">Save location & references <span>↗</span></button></form></dialog>
+<dialog id="settings-dialog"><form id="settings-form"><div class="dialog-heading"><div><div class="eyebrow">MODEL CONNECTION</div><h2>Gemini settings</h2></div><button type="button" class="icon-btn close-dialog" aria-label="Close">×</button></div><p id="server-key-note"></p><label class="field-label" for="api-key">Gemini API key</label><input id="api-key" type="password" autocomplete="off" placeholder="Paste your API key"><p class="note">Kept only in this page’s memory and sent to your backend when you inspect. Refreshing clears it. For persistent setup, add GEMINI_API_KEY to your server’s .env file.</p><p class="note">Reference and inspection photos are sent to Google Gemini for analysis. Saved photos and reports stay in this app’s local data folder.</p><div class="model-setting">Model <code id="model-name"></code></div><button type="submit" class="button primary full">Use these settings</button></form></dialog>
+<dialog id="photo-dialog"><button class="icon-btn close-dialog" aria-label="Close image">×</button><img id="large-photo" alt="Expanded inspection evidence"></dialog>
+</body></html>
